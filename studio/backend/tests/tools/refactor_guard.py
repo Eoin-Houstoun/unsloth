@@ -252,12 +252,20 @@ _ARG_FIXTURES = {
     "n": lambda text: len(text),
     "vs": lambda text: 0,
     "needle": lambda text: "[",
+    # ``_safe_cut`` is asked where the first sentinel is, so hand it the real answer
+    # rather than 0: at 0 it returns 0 for every input and pins nothing.
+    "first": lambda text: _parser_first_sentinel(text),
     "out": lambda text: [],
     "previous": lambda text: text,
     "markers": lambda text: _tool_healing_build_markers(text),
     "patterns": lambda text: _tool_healing_all_pats(),
     "strip_segment": lambda text: (lambda segment, is_last: segment),
 }
+
+
+def _parser_first_sentinel(text: str):
+    from core.inference import tool_call_parser
+    return tool_call_parser._first_sentinel(text, 0)
 
 
 def _tool_healing_build_markers(text: str):
